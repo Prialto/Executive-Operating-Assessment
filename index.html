@@ -714,35 +714,13 @@ async function sendToZapier() {
   };
 
   try {
-    // Use a hidden form POST to bypass CORS restrictions on GitHub Pages
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = ZAPIER_WEBHOOK;
-    form.target = 'zapier_frame'; // post into hidden iframe so page doesn't redirect
-    form.style.display = 'none';
+    // Build query string from payload and append to webhook URL
+    const params = new URLSearchParams();
+    Object.entries(payload).forEach(([k, v]) => params.append(k, v ?? ''));
+    const url = `${ZAPIER_WEBHOOK}?${params.toString()}`;
 
-    // Add each field as a hidden input
-    Object.entries(payload).forEach(([key, val]) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = val ?? '';
-      form.appendChild(input);
-    });
-
-    // Create hidden iframe to absorb the response
-    let iframe = document.getElementById('zapier_frame');
-    if (!iframe) {
-      iframe = document.createElement('iframe');
-      iframe.name = 'zapier_frame';
-      iframe.id = 'zapier_frame';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
+    // Use a no-cors fetch with GET — works from static pages without CORS issues
+    await fetch(url, { method: 'GET', mode: 'no-cors' });
   } catch(e) { console.warn('Zapier send failed:', e); }
 }
 
