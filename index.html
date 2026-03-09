@@ -676,15 +676,16 @@ async function sendToZapier() {
     ac6:['Never','Rarely','Sometimes','Often','Constantly']
   };
   const delQText = {
-    q1:['Do most myself','Occasionally, stay involved','Delegate regularly with checkpoints','Delegate fully'],
-    q2:['Explain step-by-step','Give direction + examples','Provide outcome & let them decide','Assign fully independent'],
-    q3:['Real-time','Daily','Few times per week','Weekly','Only if issue'],
-    q4:['Written','Dashboard','Short check-in','Highlights only'],
-    q5:['Resist','Welcome if saves time','Prefer gradual','Actively seek improvements','Adapt fairly quickly'],
-    q6:['Be involved','Approve final','Consult occasionally','Let others decide']
+    del_q1:['Do most myself','Occasionally, stay involved','Delegate regularly with checkpoints','Delegate fully'],
+    del_q2:['Explain step-by-step','Give direction + examples','Provide outcome & let them decide','Assign fully independent'],
+    del_q3:['Real-time','Daily','Few times per week','Weekly','Only if issue'],
+    del_q4:['Written','Dashboard','Short check-in','Highlights only'],
+    del_q5:['Resist','Welcome if saves time','Prefer gradual','Actively seek improvements','Adapt fairly quickly'],
+    del_q6:['Be involved','Approve final','Consult occasionally','Let others decide']
   };
   const readText = ['Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree'];
   const getAns = (name, map) => { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? map[name][+el.value] : 'Not answered'; };
+  const getDelAns = (qname, mapkey, map) => { const el = document.querySelector(`input[name="${qname}"]:checked`); return el ? map[mapkey][+el.value] : 'Not answered'; };
 
   const supportAreas = [...document.querySelectorAll('#p1 .check-item input:checked')]
     .map(i => i.closest('.check-item').querySelector('span').textContent).join(', ');
@@ -714,14 +715,14 @@ async function sendToZapier() {
     admin_complexity_level: $('acLabel').textContent.split('— ')[1] || '',
 
     // Page 3 — Delegation Style
-    del_q1: getAns('q1', delQText),
-    del_q2: getAns('q2', delQText),
-    del_q3: getAns('q3', delQText),
-    del_q4: getAns('q4', delQText),
-    del_q5: getAns('q5', delQText),
-    del_q6: getAns('q6', delQText),
-    delegation_style_score: $('delPct').textContent,
-    delegation_style: $('delLabel').textContent.split('— ')[1] || '',
+    del_q1: getDelAns('q1', 'del_q1', delQText),
+    del_q2: getDelAns('q2', 'del_q2', delQText),
+    del_q3: getDelAns('q3', 'del_q3', delQText),
+    del_q4: getDelAns('q4', 'del_q4', delQText),
+    del_q5: getDelAns('q5', 'del_q5', delQText),
+    del_q6: getDelAns('q6', 'del_q6', delQText),
+    delegation_style_score: $('delPct').textContent || 'Not scored',
+    delegation_style: ($('delLabel').textContent.split('— ')[1] || 'Not scored'),
 
     // Page 4 — Delegation Readiness
     read_s1: readText[+document.querySelector('input[name="s1"]:checked')?.value] || 'Not answered',
@@ -735,13 +736,15 @@ async function sendToZapier() {
   };
 
   try {
-    // Build query string from payload and append to webhook URL
-    const params = new URLSearchParams();
-    Object.entries(payload).forEach(([k, v]) => params.append(k, v ?? ''));
-    const url = `${ZAPIER_WEBHOOK}?${params.toString()}`;
-
-    // Use a no-cors fetch with GET — works from static pages without CORS issues
-    await fetch(url, { method: 'GET', mode: 'no-cors' });
+    // Send as proper JSON body — Zapier parses this as clean fields
+    fetch(ZAPIER_WEBHOOK, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    // Small delay to ensure request fires before success overlay shows
+    await new Promise(res => setTimeout(res, 1000));
   } catch(e) { console.warn('Zapier send failed:', e); }
 }
 
