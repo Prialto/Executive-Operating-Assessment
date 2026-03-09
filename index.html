@@ -643,7 +643,7 @@ function scoreReadiness(){
 document.querySelectorAll('#p4 input[type=radio]').forEach(r=>r.addEventListener('change',scoreReadiness));
 
 /* ---- ZAPIER WEBHOOK ---- */
-const ZAPIER_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/26065109/ux157rz/';
+const ZAPIER_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/26065109';
 
 async function sendToZapier() {
   const acQText = {
@@ -714,11 +714,35 @@ async function sendToZapier() {
   };
 
   try {
-    await fetch(ZAPIER_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    // Use a hidden form POST to bypass CORS restrictions on GitHub Pages
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = ZAPIER_WEBHOOK;
+    form.target = 'zapier_frame'; // post into hidden iframe so page doesn't redirect
+    form.style.display = 'none';
+
+    // Add each field as a hidden input
+    Object.entries(payload).forEach(([key, val]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = val ?? '';
+      form.appendChild(input);
     });
+
+    // Create hidden iframe to absorb the response
+    let iframe = document.getElementById('zapier_frame');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.name = 'zapier_frame';
+      iframe.id = 'zapier_frame';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
   } catch(e) { console.warn('Zapier send failed:', e); }
 }
 
