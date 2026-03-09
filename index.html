@@ -642,6 +642,86 @@ function scoreReadiness(){
 }
 document.querySelectorAll('#p4 input[type=radio]').forEach(r=>r.addEventListener('change',scoreReadiness));
 
+/* ---- ZAPIER WEBHOOK ---- */
+const ZAPIER_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/26065109/ux157rz/';
+
+async function sendToZapier() {
+  const acQText = {
+    ac1:['1–2','3–4','5–6','7+'],
+    ac2:['Never','Rarely','Sometimes','Often','Constantly'],
+    ac3:['Very Low','Low','Moderate','High','Very High'],
+    ac4:['Fully standardized','Mostly standardized','Somewhat standardized','Inconsistent','No standard process'],
+    ac5:['Very Easy','Easy','Neutral','Difficult','Very Difficult'],
+    ac6:['Never','Rarely','Sometimes','Often','Constantly']
+  };
+  const delQText = {
+    q1:['Do most myself','Occasionally, stay involved','Delegate regularly with checkpoints','Delegate fully'],
+    q2:['Explain step-by-step','Give direction + examples','Provide outcome & let them decide','Assign fully independent'],
+    q3:['Real-time','Daily','Few times per week','Weekly','Only if issue'],
+    q4:['Written','Dashboard','Short check-in','Highlights only'],
+    q5:['Resist','Welcome if saves time','Prefer gradual','Actively seek improvements','Adapt fairly quickly'],
+    q6:['Be involved','Approve final','Consult occasionally','Let others decide']
+  };
+  const readText = ['Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree'];
+  const getAns = (name, map) => { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? map[name][+el.value] : 'Not answered'; };
+
+  const supportAreas = [...document.querySelectorAll('#p1 .check-item input:checked')]
+    .map(i => i.closest('.check-item').querySelector('span').textContent).join(', ');
+
+  const payload = {
+    // Contact Info
+    email: userEmail,
+    firstname: userName.split(' ')[0] || userName,
+    lastname: userName.split(' ').slice(1).join(' ') || '',
+    submitted_at: new Date().toISOString(),
+
+    // Page 1 — Cost Calculator
+    admin_hours: $('adminHours').value,
+    hourly_rate: $('hourlyRate').value,
+    monthly_cost: $('monthlyCost').value,
+    annual_savings: $('annualSavings').textContent.replace(/[$,]/g,''),
+    support_areas: supportAreas,
+
+    // Page 2 — Admin Complexity
+    ac_q1: getAns('ac1', acQText),
+    ac_q2: getAns('ac2', acQText),
+    ac_q3: getAns('ac3', acQText),
+    ac_q4: getAns('ac4', acQText),
+    ac_q5: getAns('ac5', acQText),
+    ac_q6: getAns('ac6', acQText),
+    admin_complexity_score: $('acPct').textContent,
+    admin_complexity_level: $('acLabel').textContent.split('— ')[1] || '',
+
+    // Page 3 — Delegation Style
+    del_q1: getAns('q1', delQText),
+    del_q2: getAns('q2', delQText),
+    del_q3: getAns('q3', delQText),
+    del_q4: getAns('q4', delQText),
+    del_q5: getAns('q5', delQText),
+    del_q6: getAns('q6', delQText),
+    delegation_style_score: $('delPct').textContent,
+    delegation_style: $('delLabel').textContent.split('— ')[1] || '',
+
+    // Page 4 — Delegation Readiness
+    read_s1: readText[+document.querySelector('input[name="s1"]:checked')?.value] || 'Not answered',
+    read_s2: readText[+document.querySelector('input[name="s2"]:checked')?.value] || 'Not answered',
+    read_s3: readText[+document.querySelector('input[name="s3"]:checked')?.value] || 'Not answered',
+    read_s4: readText[+document.querySelector('input[name="s4"]:checked')?.value] || 'Not answered',
+    read_s5: readText[+document.querySelector('input[name="s5"]:checked')?.value] || 'Not answered',
+    read_s6: readText[+document.querySelector('input[name="s6"]:checked')?.value] || 'Not answered',
+    readiness_score: $('readPct').textContent,
+    readiness_level: $('readLabel').textContent.split('— ')[1] || ''
+  };
+
+  try {
+    await fetch(ZAPIER_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch(e) { console.warn('Zapier send failed:', e); }
+}
+
 /* ---- VALIDATION & SUBMIT ---- */
 function validateAll() {
   const errors = [];
@@ -667,7 +747,7 @@ function validateAll() {
   return errors;
 }
 
-function submitAssessment() {
+async function submitAssessment() {
   const errors = validateAll();
   const vBox = $('validationBox');
   const vList = $('validationList');
@@ -682,6 +762,10 @@ function submitAssessment() {
   vBox.style.display = 'none';
   const btn = $('submitBtn');
   if(btn){ btn.disabled=true; btn.textContent='Submitting…'; }
+
+  // Send to Zapier then show success
+  await sendToZapier();
+
   $('successName').textContent = userName;
   $('successEmail').textContent = userEmail;
   $('successOverlay').classList.add('show');
