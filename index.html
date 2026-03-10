@@ -7,8 +7,6 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Segoe UI',sans-serif;background:#1a2a3a;min-height:100vh;display:flex;flex-direction:column;align-items:center}
-
-  /* ---- GATE SCREEN ---- */
   #gate{width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a2a3a 50%,#0e3a4a)}
   .gate-card{background:#fff;border-radius:16px;padding:48px 40px;max-width:460px;width:calc(100% - 40px);box-shadow:0 16px 60px rgba(0,0,0,.4);text-align:center}
   .gate-logo{font-size:2rem;font-weight:800;color:#1a2a3a;margin-bottom:6px}
@@ -24,10 +22,7 @@
   .gate-btn{width:100%;background:#00b5ad;color:#fff;border:none;border-radius:8px;padding:14px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s,transform .15s;margin-top:8px}
   .gate-btn:hover{background:#009a94;transform:translateY(-1px)}
   .gate-sub{font-size:0.75rem;color:#aaa;margin-top:16px}
-
-  /* ---- MAIN APP (hidden until gate passed) ---- */
   #app{display:none;width:100%;flex-direction:column;align-items:center}
-
   header{width:100%;background:#fff;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #00b5ad;flex-wrap:wrap;gap:10px}
   .logo{font-size:1.4rem;font-weight:800;color:#1a2a3a}
   .user-badge{font-size:0.78rem;color:#555;background:#f0fafa;border:1px solid #c0e8e8;padding:5px 12px;border-radius:20px}
@@ -40,10 +35,8 @@
   .tab.active::after{color:#ffaaaa}
   .tab.done::after{content:' ✓';color:#00b5ad}
   .tab.active.done::after{color:#fff}
-
   .page{display:none;width:100%}
   .page.active{display:block}
-
   .hero{width:100%;padding:40px;display:flex;justify-content:space-between;align-items:center;gap:24px}
   .hero-1{background:linear-gradient(135deg,#1a2a3a 60%,#0e3a4a)}
   .hero-2{background:linear-gradient(135deg,#1e2a4a 60%,#0e1a3a)}
@@ -53,39 +46,32 @@
   .hero-text h1 span{color:#00b5ad}
   .hero-text p{color:#a0b8c8;margin-top:10px;max-width:440px;font-size:0.9rem;line-height:1.6}
   .hero-icon svg{width:110px;height:90px}
-
   .card{background:#fff;border-radius:12px;max-width:860px;width:calc(100% - 48px);margin:28px auto;box-shadow:0 8px 40px rgba(0,0,0,.3);overflow:hidden}
   .card-header{background:#1a8a85;color:#fff;text-align:center;padding:16px;font-size:1rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-
   .calc-row{display:flex;flex-wrap:wrap;gap:12px;padding:24px;background:#f0fafa;border-bottom:1px solid #d0e8e8}
   .calc-field{flex:1;min-width:110px}
   .calc-field label{display:block;font-size:0.68rem;font-weight:600;color:#555;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
   .calc-field input,.calc-field select{width:100%;border:1px solid #c0d8d8;border-radius:6px;padding:8px 10px;font-size:0.9rem;color:#1a2a3a;background:#fff;outline:none;transition:border .2s}
   .calc-field input:focus,.calc-field select:focus{border-color:#00b5ad}
   .result-box{background:#00b5ad;color:#fff;border-radius:8px;padding:8px 14px;font-weight:700;font-size:1.05rem;min-height:38px;display:flex;align-items:center;justify-content:center;margin-top:20px}
-
   .section{padding:20px 24px}
   .section+.section{border-top:1px solid #eee}
   .section-title{background:#2a9a90;color:#fff;text-align:center;padding:9px;border-radius:6px;font-weight:700;font-size:0.88rem;letter-spacing:.5px;margin-bottom:14px;text-transform:uppercase}
-
   .checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:9px}
   .check-item{display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 10px;border-radius:6px;border:1.5px solid #ddd;transition:all .2s;background:#fafafa}
   .check-item:hover{border-color:#00b5ad;background:#f0fafa}
   .check-item.checked{border-color:#00b5ad;background:#e0f7f6}
   .check-item input{accent-color:#00b5ad;width:15px;height:15px;cursor:pointer;flex-shrink:0}
   .check-item span{font-size:0.8rem;color:#333;font-weight:500}
-
   .summary{background:#f0fafa;border-radius:10px;padding:18px;margin:0 24px 24px;border:1px solid #c0e8e8}
   .summary h3{color:#1a8a85;font-size:.95rem;margin-bottom:12px;font-weight:700}
   .summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
   .summary-item{background:#fff;border-radius:8px;padding:12px;text-align:center;border:1px solid #d0e8e8}
   .summary-item .val{font-size:1.3rem;font-weight:800;color:#00b5ad}
   .summary-item .lbl{font-size:0.68rem;color:#777;margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
-
   .dark-section{background:#1e3040;padding:20px 24px}
   .instr{background:#243548;border-radius:8px;padding:14px 18px;margin-bottom:18px;font-size:0.85rem;color:#a0c0d0;line-height:1.6;border-left:3px solid #00b5ad}
   .instr strong{color:#d0e8f0;display:block;margin-bottom:4px}
-
   .q-card{background:#2a3f55;border-radius:8px;padding:18px 20px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
   .q-card.highlighted{border:2px solid #7b5ea7}
   .q-left{flex:1;min-width:180px}
@@ -95,7 +81,6 @@
   .q-option{display:flex;align-items:center;gap:7px;cursor:pointer}
   .q-option input[type=radio]{accent-color:#00b5ad;width:14px;height:14px;flex-shrink:0}
   .q-option span{font-size:0.8rem;color:#d0e8f0}
-
   .s-card{background:#2a3f55;border-radius:8px;padding:18px 20px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
   .s-left{flex:1;min-width:180px}
   .s-label{font-size:0.78rem;font-weight:700;color:#00c8c0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
@@ -104,7 +89,6 @@
   .s-option{display:flex;align-items:center;gap:7px;cursor:pointer}
   .s-option input[type=radio]{accent-color:#00b5ad;width:14px;height:14px;flex-shrink:0}
   .s-option span{font-size:0.8rem;color:#d0e8f0}
-
   .score-area{background:#f0fafa;border-radius:10px;padding:18px;margin:0 24px 24px;border:1px solid #c0e8e8}
   .score-area h3{color:#1a8a85;font-size:.95rem;margin-bottom:14px;font-weight:700}
   .score-bar-wrap{background:#ddd;border-radius:20px;height:22px;overflow:hidden;margin-bottom:8px}
@@ -113,8 +97,6 @@
   .score-label{font-size:0.78rem;color:#555;margin-bottom:10px}
   .score-result{background:#fff;border:1px solid #d0e8e8;border-radius:8px;padding:12px 16px;font-size:0.85rem;color:#1a2a3a;line-height:1.6}
   .score-result strong{color:#1a8a85}
-
-  /* SUBMIT SECTION */
   .next-btn-wrap{padding:20px 24px;text-align:right;border-top:1px solid #eee}
   .next-btn{background:linear-gradient(135deg,#00b5ad,#1a8a85);color:#fff;border:none;border-radius:30px;padding:12px 36px;font-size:0.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,181,173,.35);transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:8px}
   .next-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,181,173,.45)}
@@ -128,8 +110,6 @@
   .validation-box ul{list-style:none;padding:0}
   .validation-box ul li{font-size:0.8rem;color:#c0392b;padding:3px 0;padding-left:18px;position:relative}
   .validation-box ul li::before{content:"✗";position:absolute;left:0;font-weight:700}
-
-  /* SUCCESS OVERLAY */
   #successOverlay{display:none;position:fixed;inset:0;background:rgba(10,30,45,.92);z-index:999;align-items:center;justify-content:center}
   #successOverlay.show{display:flex}
   .success-card{background:#fff;border-radius:16px;padding:48px 40px;max-width:460px;width:calc(100% - 40px);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
@@ -141,16 +121,13 @@
   .redirect-bar span{color:#00b5ad;font-weight:700}
   .go-btn{background:#00b5ad;color:#fff;border:none;border-radius:8px;padding:12px 32px;font-size:.95rem;font-weight:700;cursor:pointer;transition:background .2s}
   .go-btn:hover{background:#009a94}
-
   .cta{background:linear-gradient(135deg,#1a8a85,#0e5a58);padding:28px;text-align:center;width:100%}
   .cta h2{color:#fff;font-size:1.2rem;margin-bottom:6px}
   .cta p{color:#a0d8d5;font-size:0.85rem;margin-bottom:18px}
   .cta-btn{background:#fff;color:#1a8a85;font-weight:700;padding:11px 32px;border-radius:30px;border:none;font-size:.95rem;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 12px rgba(0,0,0,.2)}
   .cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
-
   footer{background:#0e1e2e;color:#6a8a9a;font-size:0.75rem;padding:14px 40px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;width:100%}
   footer a{color:#00b5ad;text-decoration:none}
-
   @media(max-width:600px){
     .hero{flex-direction:column;padding:24px 20px}.hero-icon{display:none}
     .q-right,.s-right{grid-template-columns:1fr}
@@ -162,13 +139,12 @@
 </head>
 <body>
 
-<!-- ===== GATE ===== -->
+<!-- GATE -->
 <div id="gate">
   <div class="gate-card">
     <div class="gate-logo">prialto</div>
     <h2>Executive Assessment Tool</h2>
     <p>Please enter your details below to access the assessment. We use this to personalize your results and follow up with recommendations.</p>
-
     <div class="gate-field">
       <label>Full Name</label>
       <input id="gateName" type="text" placeholder="Jane Smith" autocomplete="name"/>
@@ -184,9 +160,8 @@
   </div>
 </div>
 
-<!-- ===== MAIN APP ===== -->
+<!-- MAIN APP -->
 <div id="app">
-
 <header>
   <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
     <div class="logo">prialto</div>
@@ -227,43 +202,50 @@
         <select id="reduction"><option>20%</option><option>30%</option><option selected>40%</option><option>50%</option><option>60%</option><option>70%</option></select></div>
       <div class="calc-field"><label>Annual Savings ($)</label><div class="result-box" id="annualSavings">$0</div></div>
     </div>
+
+    <!-- SECTION 1: Core Process -->
     <div class="section">
       <div class="section-title">Core Process of Support</div>
-      <div class="checks">
-        <label class="check-item"><input type="checkbox"><span>Calendar</span></label>
-        <label class="check-item"><input type="checkbox"><span>Expense Management</span></label>
-        <label class="check-item"><input type="checkbox"><span>Inbox</span></label>
-        <label class="check-item"><input type="checkbox"><span>CRM Management</span></label>
-        <label class="check-item"><input type="checkbox"><span>Travel</span></label>
+      <div class="checks" id="coreChecks">
+        <label class="check-item"><input type="checkbox" data-group="core"><span>Calendar</span></label>
+        <label class="check-item"><input type="checkbox" data-group="core"><span>Expense Management</span></label>
+        <label class="check-item"><input type="checkbox" data-group="core"><span>Inbox</span></label>
+        <label class="check-item"><input type="checkbox" data-group="core"><span>CRM Management</span></label>
+        <label class="check-item"><input type="checkbox" data-group="core"><span>Travel</span></label>
       </div>
     </div>
+
+    <!-- SECTION 2: Operations & Administration -->
     <div class="section">
       <div class="section-title">Additional Areas of Support Needed</div>
       <div style="font-size:0.78rem;font-weight:700;color:#1a8a85;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding:0 2px">📋 Operations & Administration</div>
-      <div class="checks" style="margin-bottom:18px">
-        <label class="check-item"><input type="checkbox"><span>Meeting Invitations</span></label>
-        <label class="check-item"><input type="checkbox"><span>Task Management</span></label>
-        <label class="check-item"><input type="checkbox"><span>Document Support</span></label>
-        <label class="check-item"><input type="checkbox"><span>Reporting & Analytics</span></label>
-        <label class="check-item"><input type="checkbox"><span>Invoice & Billing Support</span></label>
-        <label class="check-item"><input type="checkbox"><span>Data Entry & System Updates</span></label>
-        <label class="check-item"><input type="checkbox"><span>Recurring Meeting & Agenda Mgmt</span></label>
-        <label class="check-item"><input type="checkbox"><span>Compliance & Policy Support</span></label>
-        <label class="check-item"><input type="checkbox"><span>Vendor & Contact Management</span></label>
-        <label class="check-item"><input type="checkbox"><span>Custom Task Support</span></label>
+      <div class="checks" id="opsChecks" style="margin-bottom:18px">
+        <label class="check-item"><input type="checkbox" data-group="ops"><span>Meeting Invitations</span></label>
+        <label class="check-item"><input type="checkbox" data-group="ops"><span>Task Management</span></label>
+        <label class="check-item"><input type="checkbox" data-group="ops"><span>Document Support</span></label>
+        <label class="check-item"><input type="checkbox" data-group="ops"><span>Reporting & Analytics</span></label>
+        <label class="check-item"><input type="checkbox" data-group="ops"><span>Invoice & Billing Support</span></label>
+        <label class="check-item"><input type="checkbox" data-group="ops"><span>Data Entry & System Updates</span></label>
+        <label class="check-item"><input type="checkbox" data-group="ops"><span>Recurring Meeting & Agenda Mgmt</span></label>
+        <label class="check-item"><input type="checkbox" data-group="ops"><span>Compliance & Policy Support</span></label>
+        <label class="check-item"><input type="checkbox" data-group="ops"><span>Vendor & Contact Management</span></label>
+        <label class="check-item"><input type="checkbox" data-group="ops"><span>Custom Task Support</span></label>
       </div>
+
+      <!-- SECTION 3: Growth & Engagement -->
       <div style="font-size:0.78rem;font-weight:700;color:#1a8a85;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding:0 2px">🚀 Growth & Engagement</div>
-      <div class="checks">
-        <label class="check-item"><input type="checkbox"><span>Prospect Research</span></label>
-        <label class="check-item"><input type="checkbox"><span>Email Management</span></label>
-        <label class="check-item"><input type="checkbox"><span>Travel Management</span></label>
-        <label class="check-item"><input type="checkbox"><span>Expense Management</span></label>
-        <label class="check-item"><input type="checkbox"><span>Social Media & LinkedIn</span></label>
-        <label class="check-item"><input type="checkbox"><span>Blog & Content Management</span></label>
-        <label class="check-item"><input type="checkbox"><span>Client Onboarding & Offboarding</span></label>
-        <label class="check-item"><input type="checkbox"><span>Event & Webinar Coordination</span></label>
+      <div class="checks" id="growthChecks">
+        <label class="check-item"><input type="checkbox" data-group="growth"><span>Prospect Research</span></label>
+        <label class="check-item"><input type="checkbox" data-group="growth"><span>Email Management</span></label>
+        <label class="check-item"><input type="checkbox" data-group="growth"><span>Travel Management</span></label>
+        <label class="check-item"><input type="checkbox" data-group="growth"><span>Expense Management</span></label>
+        <label class="check-item"><input type="checkbox" data-group="growth"><span>Social Media & LinkedIn</span></label>
+        <label class="check-item"><input type="checkbox" data-group="growth"><span>Blog & Content Management</span></label>
+        <label class="check-item"><input type="checkbox" data-group="growth"><span>Client Onboarding & Offboarding</span></label>
+        <label class="check-item"><input type="checkbox" data-group="growth"><span>Event & Webinar Coordination</span></label>
       </div>
     </div>
+
     <div class="summary">
       <h3>📊 Your Summary</h3>
       <div class="summary-grid">
@@ -477,8 +459,6 @@
       <div class="score-label" id="readLabel">Answer all statements to see your readiness score.</div>
       <div class="score-result" id="readResult">Your readiness profile will appear here once all statements are rated.</div>
     </div>
-
-    <!-- SUBMIT -->
     <div class="submit-section">
       <p>Once you're happy with your responses, click below to submit your assessment. You'll be redirected to Prialto's website where a member of our team will be in touch.</p>
       <div class="validation-box" id="validationBox">
@@ -501,8 +481,7 @@
   <span>✉️ <a href="#">sales@prialto.com</a></span>
   <span>🔗 <a href="#">linkedin.com/company/prialto</a></span>
 </footer>
-
-</div><!-- end #app -->
+</div>
 
 <!-- SUCCESS OVERLAY -->
 <div id="successOverlay">
@@ -519,12 +498,10 @@
 const $ = id => document.getElementById(id);
 const fmt = n => '$' + Math.round(n).toLocaleString();
 let userName = '', userEmail = '';
-const tabDone = [false,false,false,false];
 
 /* ---- GATE ---- */
 function submitGate() {
-  const name = $('gateName').value.trim();
-  const email = $('gateEmail').value.trim();
+  const name = $('gateName').value.trim(), email = $('gateEmail').value.trim();
   let valid = true;
   if (name.length < 2) { $('nameErr').style.display='block'; $('gateName').classList.add('error'); valid=false; }
   else { $('nameErr').style.display='none'; $('gateName').classList.remove('error'); }
@@ -542,31 +519,18 @@ $('gateEmail').addEventListener('keydown', e => { if(e.key==='Enter') submitGate
 
 /* ---- TABS ---- */
 function checkTabComplete(idx) {
-  if (idx === 0) {
-    return document.querySelectorAll('#p1 .check-item input:checked').length > 0;
-  } else if (idx === 1) {
-    return ['ac1','ac2','ac3','ac4','ac5','ac6'].every(n => document.querySelector(`input[name="${n}"]:checked`));
-  } else if (idx === 2) {
-    return ['dq1','dq2','dq3','dq4','dq5','dq6'].every(n => document.querySelector(`input[name="${n}"]:checked`));
-  } else if (idx === 3) {
-    return statements.every(s => document.querySelector(`input[name="${s.id}"]:checked`));
-  }
+  if (idx === 0) return document.querySelectorAll('#p1 .check-item input:checked').length > 0;
+  if (idx === 1) return ['ac1','ac2','ac3','ac4','ac5','ac6'].every(n => document.querySelector(`input[name="${n}"]:checked`));
+  if (idx === 2) return ['dq1','dq2','dq3','dq4','dq5','dq6'].every(n => document.querySelector(`input[name="${n}"]:checked`));
+  if (idx === 3) return statements.every(s => document.querySelector(`input[name="${s.id}"]:checked`));
   return false;
 }
-
 function updateTabStatus() {
-  const tabs = document.querySelectorAll('.tab');
-  tabs.forEach((t, i) => {
-    if (checkTabComplete(i)) { t.classList.add('done'); }
-    else { t.classList.remove('done'); }
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    checkTabComplete(i) ? t.classList.add('done') : t.classList.remove('done');
   });
 }
-
-function goToPage(id, btn, idx) {
-  showPage(id, btn, idx);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
+function goToPage(id, btn, idx) { showPage(id, btn, idx); window.scrollTo({top:0,behavior:'smooth'}); }
 function showPage(id, btn, idx) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -663,6 +627,13 @@ function scoreReadiness(){
 }
 document.querySelectorAll('#p4 input[type=radio]').forEach(r=>r.addEventListener('change',scoreReadiness));
 
+/* ---- HELPER: get checked labels by data-group ---- */
+function getCheckedByGroup(group) {
+  return [...document.querySelectorAll(`#p1 input[data-group="${group}"]:checked`)]
+    .map(i => i.closest('.check-item').querySelector('span').textContent)
+    .join(', ') || 'None selected';
+}
+
 /* ---- ZAPIER WEBHOOK ---- */
 const ZAPIER_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/26065109/ux157rz/';
 
@@ -685,13 +656,9 @@ async function sendToZapier() {
   };
   const readText = ['Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree'];
   const getAns = (name, map) => { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? map[name][+el.value] : 'Not answered'; };
-  const getDelAns = (qname, mapkey, map) => { const el = document.querySelector(`input[name="${qname}"]:checked`); return el ? map[mapkey][+el.value] : 'Not answered'; };
-
-  const supportAreas = [...document.querySelectorAll('#p1 .check-item input:checked')]
-    .map(i => i.closest('.check-item').querySelector('span').textContent).join(', ');
 
   const payload = {
-    // Contact Info
+    // Contact
     email: userEmail,
     firstname: userName.split(' ')[0] || userName,
     lastname: userName.split(' ').slice(1).join(' ') || '',
@@ -702,7 +669,11 @@ async function sendToZapier() {
     hourly_rate: $('hourlyRate').value,
     monthly_cost: $('monthlyCost').value,
     annual_savings: $('annualSavings').textContent.replace(/[$,]/g,''),
-    support_areas: supportAreas,
+
+    // *** THREE SEPARATE SECTION FIELDS ***
+    core_support_areas: getCheckedByGroup('core'),
+    ops_admin_areas: getCheckedByGroup('ops'),
+    growth_engagement_areas: getCheckedByGroup('growth'),
 
     // Page 2 — Admin Complexity
     ac_q1: getAns('ac1', acQText),
@@ -715,14 +686,14 @@ async function sendToZapier() {
     admin_complexity_level: $('acLabel').textContent.split('— ')[1] || '',
 
     // Page 3 — Delegation Style
-    del_q1: getDelAns('dq1', 'dq1', delQText),
-    del_q2: getDelAns('dq2', 'dq2', delQText),
-    del_q3: getDelAns('dq3', 'dq3', delQText),
-    del_q4: getDelAns('dq4', 'dq4', delQText),
-    del_q5: getDelAns('dq5', 'dq5', delQText),
-    del_q6: getDelAns('dq6', 'dq6', delQText),
+    del_q1: getAns('dq1', delQText),
+    del_q2: getAns('dq2', delQText),
+    del_q3: getAns('dq3', delQText),
+    del_q4: getAns('dq4', delQText),
+    del_q5: getAns('dq5', delQText),
+    del_q6: getAns('dq6', delQText),
     delegation_style_score: $('delPct').textContent || 'Not scored',
-    delegation_style: ($('delLabel').textContent.split('— ')[1] || 'Not scored'),
+    delegation_style: $('delLabel').textContent.split('— ')[1] || 'Not scored',
 
     // Page 4 — Delegation Readiness
     read_s1: readText[+document.querySelector('input[name="s1"]:checked')?.value] || 'Not answered',
@@ -736,14 +707,11 @@ async function sendToZapier() {
   };
 
   try {
-    // Send as proper JSON body — Zapier parses this as clean fields
     fetch(ZAPIER_WEBHOOK, {
-      method: 'POST',
-      mode: 'no-cors',
+      method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    // Small delay to ensure request fires before success overlay shows
     await new Promise(res => setTimeout(res, 1000));
   } catch(e) { console.warn('Zapier send failed:', e); }
 }
@@ -751,56 +719,35 @@ async function sendToZapier() {
 /* ---- VALIDATION & SUBMIT ---- */
 function validateAll() {
   const errors = [];
-
-  // Page 1: at least one core or additional area checked
-  const coreChecked = document.querySelectorAll('#p1 .check-item input:checked').length;
-  if (coreChecked === 0) errors.push('Page 1 – Select at least one area of support (Core or Additional)');
-
-  // Page 2: all 6 complexity questions
-  const acNames = ['ac1','ac2','ac3','ac4','ac5','ac6'];
-  const acMissing = acNames.filter(n => !document.querySelector(`input[name="${n}"]:checked`)).length;
+  if (document.querySelectorAll('#p1 .check-item input:checked').length === 0)
+    errors.push('Page 1 – Select at least one area of support');
+  const acMissing = ['ac1','ac2','ac3','ac4','ac5','ac6'].filter(n => !document.querySelector(`input[name="${n}"]:checked`)).length;
   if (acMissing > 0) errors.push(`Page 2 – Answer all ${acMissing} unanswered Admin Complexity question${acMissing>1?'s':''}`);
-
-  // Page 3: all 6 delegation style questions
-  const delNames = ['q1','q2','q3','q4','q5','q6'];
-  const delMissing = delNames.filter(n => !document.querySelector(`input[name="${n}"]:checked`)).length;
+  const delMissing = ['dq1','dq2','dq3','dq4','dq5','dq6'].filter(n => !document.querySelector(`input[name="${n}"]:checked`)).length;
   if (delMissing > 0) errors.push(`Page 3 – Answer all ${delMissing} unanswered Delegation Style question${delMissing>1?'s':''}`);
-
-  // Page 4: all 6 readiness statements
   const readMissing = statements.filter(s => !document.querySelector(`input[name="${s.id}"]:checked`)).length;
   if (readMissing > 0) errors.push(`Page 4 – Rate all ${readMissing} unanswered Delegation Readiness statement${readMissing>1?'s':''}`);
-
   return errors;
 }
 
 async function submitAssessment() {
   const errors = validateAll();
-  const vBox = $('validationBox');
-  const vList = $('validationList');
-
+  const vBox = $('validationBox'), vList = $('validationList');
   if (errors.length > 0) {
     vList.innerHTML = errors.map(e => `<li>${e}</li>`).join('');
     vBox.style.display = 'block';
     vBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
-
   vBox.style.display = 'none';
   const btn = $('submitBtn');
   if(btn){ btn.disabled=true; btn.textContent='Submitting…'; }
-
-  // Send to Zapier then show success
   await sendToZapier();
-
   $('successName').textContent = userName;
   $('successEmail').textContent = userEmail;
   $('successOverlay').classList.add('show');
   let secs = 5;
-  const timer = setInterval(()=>{
-    secs--;
-    $('countdown').textContent = secs;
-    if(secs<=0){ clearInterval(timer); goNow(); }
-  }, 1000);
+  const timer = setInterval(()=>{ secs--; $('countdown').textContent=secs; if(secs<=0){clearInterval(timer);goNow();} }, 1000);
 }
 function goNow(){ window.location.href = 'https://www.prialto.com/'; }
 </script>
