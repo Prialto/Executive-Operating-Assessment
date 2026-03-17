@@ -73,7 +73,6 @@
   .instr{background:#243548;border-radius:8px;padding:14px 18px;margin-bottom:18px;font-size:0.85rem;color:#a0c0d0;line-height:1.6;border-left:3px solid #00b5ad}
   .instr strong{color:#d0e8f0;display:block;margin-bottom:4px}
   .q-card{background:#2a3f55;border-radius:8px;padding:18px 20px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
-  .q-card.highlighted{border:2px solid #7b5ea7}
   .q-left{flex:1;min-width:180px}
   .q-label{font-size:0.78rem;font-weight:700;color:#00c8c0;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
   .q-text{font-size:0.85rem;color:#d0e8f0;line-height:1.5}
@@ -384,7 +383,7 @@
           <label class="q-option"><input type="radio" name="dq2" value="3"><span>Assign fully independent</span></label>
         </div>
       </div>
-      <div class="q-card highlighted"><div class="q-left"><div class="q-label">Question 3</div><div class="q-text">How often do you want updates on administrative tasks?</div></div>
+      <div class="q-card"><div class="q-left"><div class="q-label">Question 3</div><div class="q-text">How often do you want updates on administrative tasks?</div></div>
         <div class="q-right">
           <label class="q-option"><input type="radio" name="dq3" value="0"><span>Real-time</span></label>
           <label class="q-option"><input type="radio" name="dq3" value="1"><span>Daily</span></label>
@@ -519,7 +518,11 @@ $('gateEmail').addEventListener('keydown', e => { if(e.key==='Enter') submitGate
 
 /* ---- TABS ---- */
 function checkTabComplete(idx) {
-  if (idx === 0) return document.querySelectorAll('#p1 .check-item input:checked').length > 0;
+  if (idx === 0) return (
+    document.querySelectorAll('#p1 input[data-group="core"]:checked').length > 0 &&
+    document.querySelectorAll('#p1 input[data-group="ops"]:checked').length > 0 &&
+    document.querySelectorAll('#p1 input[data-group="growth"]:checked').length > 0
+  );
   if (idx === 1) return ['ac1','ac2','ac3','ac4','ac5','ac6'].every(n => document.querySelector(`input[name="${n}"]:checked`));
   if (idx === 2) return ['dq1','dq2','dq3','dq4','dq5','dq6'].every(n => document.querySelector(`input[name="${n}"]:checked`));
   if (idx === 3) return statements.every(s => document.querySelector(`input[name="${s.id}"]:checked`));
@@ -658,24 +661,17 @@ async function sendToZapier() {
   const getAns = (name, map) => { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? map[name][+el.value] : 'Not answered'; };
 
   const payload = {
-    // Contact
     email: userEmail,
     firstname: userName.split(' ')[0] || userName,
     lastname: userName.split(' ').slice(1).join(' ') || '',
     submitted_at: new Date().toISOString(),
-
-    // Page 1 — Cost Calculator
     admin_hours: $('adminHours').value,
     hourly_rate: $('hourlyRate').value,
     monthly_cost: $('monthlyCost').value,
     annual_savings: $('annualSavings').textContent.replace(/[$,]/g,''),
-
-    // *** THREE SEPARATE SECTION FIELDS ***
     core_support_areas: getCheckedByGroup('core'),
     ops_admin_areas: getCheckedByGroup('ops'),
     growth_engagement_areas: getCheckedByGroup('growth'),
-
-    // Page 2 — Admin Complexity
     ac_q1: getAns('ac1', acQText),
     ac_q2: getAns('ac2', acQText),
     ac_q3: getAns('ac3', acQText),
@@ -684,8 +680,6 @@ async function sendToZapier() {
     ac_q6: getAns('ac6', acQText),
     admin_complexity_score: $('acPct').textContent,
     admin_complexity_level: $('acLabel').textContent.split('— ')[1] || '',
-
-    // Page 3 — Delegation Style
     del_q1: getAns('dq1', delQText),
     del_q2: getAns('dq2', delQText),
     del_q3: getAns('dq3', delQText),
@@ -694,8 +688,6 @@ async function sendToZapier() {
     del_q6: getAns('dq6', delQText),
     delegation_style_score: $('delPct').textContent || 'Not scored',
     delegation_style: $('delLabel').textContent.split('— ')[1] || 'Not scored',
-
-    // Page 4 — Delegation Readiness
     read_s1: readText[+document.querySelector('input[name="s1"]:checked')?.value] || 'Not answered',
     read_s2: readText[+document.querySelector('input[name="s2"]:checked')?.value] || 'Not answered',
     read_s3: readText[+document.querySelector('input[name="s3"]:checked')?.value] || 'Not answered',
@@ -719,8 +711,12 @@ async function sendToZapier() {
 /* ---- VALIDATION & SUBMIT ---- */
 function validateAll() {
   const errors = [];
-  if (document.querySelectorAll('#p1 .check-item input:checked').length === 0)
-    errors.push('Page 1 – Select at least one area of support');
+  if (document.querySelectorAll('#p1 input[data-group="core"]:checked').length === 0)
+    errors.push('Page 1 – Select at least one Core Process of Support area');
+  if (document.querySelectorAll('#p1 input[data-group="ops"]:checked').length === 0)
+    errors.push('Page 1 – Select at least one Operations & Administration area');
+  if (document.querySelectorAll('#p1 input[data-group="growth"]:checked').length === 0)
+    errors.push('Page 1 – Select at least one Growth & Engagement area');
   const acMissing = ['ac1','ac2','ac3','ac4','ac5','ac6'].filter(n => !document.querySelector(`input[name="${n}"]:checked`)).length;
   if (acMissing > 0) errors.push(`Page 2 – Answer all ${acMissing} unanswered Admin Complexity question${acMissing>1?'s':''}`);
   const delMissing = ['dq1','dq2','dq3','dq4','dq5','dq6'].filter(n => !document.querySelector(`input[name="${n}"]:checked`)).length;
