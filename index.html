@@ -192,14 +192,43 @@
   </div>
   <div class="card">
     <div class="card-header">Opportunity cost calculator</div>
-    <div class="calc-row">
-      <div class="calc-field"><label>Weekly Admin Hours</label>
-        <select id="adminHours"><option>5</option><option>10</option><option>15</option><option selected>20</option><option>25</option><option>30</option><option>40</option></select></div>
-      <div class="calc-field"><label>Hourly Rate ($)</label><input id="hourlyRate" type="number" value="20" min="1"/></div>
-      <div class="calc-field"><label>Monthly Cost ($)</label><input id="monthlyCost" type="number" readonly style="background:#f5f5f5;color:#888"/></div>
-      <div class="calc-field"><label>% Reduction</label>
-        <select id="reduction"><option>20%</option><option>30%</option><option selected>40%</option><option>50%</option><option>60%</option><option>70%</option></select></div>
-      <div class="calc-field"><label>Annual Savings ($)</label><div class="result-box" id="annualSavings">$0</div></div>
+    <div class="calc-row" style="flex-direction:column;gap:18px">
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+        <div class="calc-field">
+          <label>Total Hours Worked Per Week</label>
+          <select id="totalHours">
+            <option value="" disabled selected>Select hours…</option>
+            <option>30</option><option>35</option><option>40</option><option>45</option>
+            <option>50</option><option>55</option><option>60</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label>Hours Spent on Admin Per Week</label>
+          <select id="adminHours">
+            <option value="" disabled selected>Select hours…</option>
+            <option>5</option><option>10</option><option>15</option><option>20</option>
+            <option>25</option><option>30</option><option>40</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <label>Hourly Rate ($)</label>
+          <input id="hourlyRate" type="number" min="1" placeholder="e.g. 150"/>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+        <div class="calc-field">
+          <label>Monthly Admin Cost Lost ($)</label>
+          <input id="monthlyCost" type="text" readonly placeholder="—" style="background:#f5f5f5;color:#555"/>
+        </div>
+        <div class="calc-field">
+          <label>% Reduction</label>
+          <input id="reductionPct" type="text" readonly placeholder="—" style="background:#f5f5f5;color:#555"/>
+        </div>
+        <div class="calc-field">
+          <label>Annual Savings ($)</label>
+          <div class="result-box" id="annualSavings">—</div>
+        </div>
+      </div>
     </div>
 
     <!-- SECTION 1: Core Process -->
@@ -250,7 +279,7 @@
       <div class="summary-grid">
         <div class="summary-item"><div class="val" id="s-hours">20</div><div class="lbl">Weekly Admin Hrs</div></div>
         <div class="summary-item"><div class="val" id="s-monthly">$0</div><div class="lbl">Monthly Admin Cost</div></div>
-        <div class="summary-item"><div class="val" id="s-annual">$0</div><div class="lbl">Annual Savings</div></div>
+        <div class="summary-item"><div class="val" id="s-annual">$0</div><div class="lbl">Annual Net Savings</div></div>
         <div class="summary-item"><div class="val" id="s-tasks">0</div><div class="lbl">Areas Selected</div></div>
       </div>
     </div>
@@ -543,21 +572,31 @@ function showPage(id, btn, idx) {
 }
 
 /* ---- CALC ---- */
+function getPrialtoTier(hrs) {
+  if (hrs <= 14) return { label: 'Starter — $1,500/mo', monthly: 1500 };
+  if (hrs <= 28) return { label: 'Professional — $3,000/mo', monthly: 3000 };
+  return { label: 'Executive — $3,600/mo', monthly: 3600 };
+}
 function calc() {
   const hrs = +$('adminHours').value, rate = +$('hourlyRate').value || 0;
-  const pct = parseInt($('reduction').value) / 100;
-  const monthly = hrs * 4.33 * rate, annual = monthly * 12 * pct;
-  $('monthlyCost').value = Math.round(monthly);
-  $('annualSavings').textContent = fmt(annual);
+  const monthly = hrs * 4.33 * rate;
+  const tier = getPrialtoTier(hrs);
+  const reductionPct = monthly > 0 ? Math.round(((monthly - tier.monthly) / monthly) * 100) : 0;
+  const annualSavings = (hrs * rate * 52) - (tier.monthly * 12);
+
+  $('monthlyCost').value = fmt(monthly);
+  $('reductionPct').value = reductionPct + '%';
+  $('annualSavings').textContent = fmt(annualSavings);
   $('s-hours').textContent = hrs;
   $('s-monthly').textContent = fmt(monthly);
-  $('s-annual').textContent = fmt(annual);
+  $('s-annual').textContent = fmt(annualSavings);
   $('s-tasks').textContent = document.querySelectorAll('#p1 .check-item input:checked').length;
 }
 document.querySelectorAll('#p1 .check-item').forEach(item => {
   item.addEventListener('change', () => { item.classList.toggle('checked', item.querySelector('input').checked); calc(); updateTabStatus(); });
 });
-['adminHours','hourlyRate','reduction'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+['totalHours','adminHours'].forEach(id => { $(id).addEventListener('change', calc); });
+$('hourlyRate').addEventListener('input', calc);
 
 /* ---- ADMIN COMPLEXITY ---- */
 function scoreComplexity() {
@@ -711,6 +750,9 @@ async function sendToZapier() {
 /* ---- VALIDATION & SUBMIT ---- */
 function validateAll() {
   const errors = [];
+  if (!$('totalHours').value) errors.push('Page 1 – Select your total hours worked per week');
+  if (!$('adminHours').value) errors.push('Page 1 – Select your weekly admin hours');
+  if (!$('hourlyRate').value || +$('hourlyRate').value < 1) errors.push('Page 1 – Enter your hourly rate');
   if (document.querySelectorAll('#p1 input[data-group="core"]:checked').length === 0)
     errors.push('Page 1 – Select at least one Core Process of Support area');
   if (document.querySelectorAll('#p1 input[data-group="ops"]:checked').length === 0)
