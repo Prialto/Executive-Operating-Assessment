@@ -704,9 +704,11 @@ async function sendToZapier() {
     firstname: userName.split(' ')[0] || userName,
     lastname: userName.split(' ').slice(1).join(' ') || '',
     submitted_at: new Date().toISOString(),
+    total_hours_worked: $('totalHours').value,
     admin_hours: $('adminHours').value,
     hourly_rate: $('hourlyRate').value,
     monthly_cost: $('monthlyCost').value,
+    reduction_pct: $('reductionPct').value,
     annual_savings: $('annualSavings').textContent.replace(/[$,]/g,''),
     core_support_areas: getCheckedByGroup('core'),
     ops_admin_areas: getCheckedByGroup('ops'),
@@ -719,6 +721,7 @@ async function sendToZapier() {
     ac_q6: getAns('ac6', acQText),
     admin_complexity_score: $('acPct').textContent,
     admin_complexity_level: $('acLabel').textContent.split('— ')[1] || '',
+    admin_complexity_description: $('acResult').innerText || '',
     del_q1: getAns('dq1', delQText),
     del_q2: getAns('dq2', delQText),
     del_q3: getAns('dq3', delQText),
@@ -727,6 +730,7 @@ async function sendToZapier() {
     del_q6: getAns('dq6', delQText),
     delegation_style_score: $('delPct').textContent || 'Not scored',
     delegation_style: $('delLabel').textContent.split('— ')[1] || 'Not scored',
+    delegation_style_description: $('delResult').innerText || '',
     read_s1: readText[+document.querySelector('input[name="s1"]:checked')?.value] || 'Not answered',
     read_s2: readText[+document.querySelector('input[name="s2"]:checked')?.value] || 'Not answered',
     read_s3: readText[+document.querySelector('input[name="s3"]:checked')?.value] || 'Not answered',
@@ -734,7 +738,8 @@ async function sendToZapier() {
     read_s5: readText[+document.querySelector('input[name="s5"]:checked')?.value] || 'Not answered',
     read_s6: readText[+document.querySelector('input[name="s6"]:checked')?.value] || 'Not answered',
     readiness_score: $('readPct').textContent,
-    readiness_level: $('readLabel').textContent.split('— ')[1] || ''
+    readiness_level: $('readLabel').textContent.split('— ')[1] || '',
+    readiness_description: $('readResult').innerText || ''
   };
 
   try {
